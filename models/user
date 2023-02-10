@@ -1,0 +1,17 @@
+const mongoose = require('mongoose')
+
+const UserSchema = mongoose.Schema
+
+const userModel = new UserSchema({
+    name: String,
+    email: String,
+    password: String,
+    posts: [{
+        type: Schema.Types.ObjectId,
+        ref: "Post"
+    }]
+})
+
+const User = mongoose.model("User", userModel)
+
+module.exports = User

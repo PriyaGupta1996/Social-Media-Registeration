@@ -1,0 +1,15 @@
+const mongoose = require('mongoose')
+
+const PostSchema = mongoose.Schema
+
+const postModel = new UserSchema({
+    message: String,
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }
+})
+
+const Post = mongoose.model("Post", postModel)
+
+module.exports = Post
