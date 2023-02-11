@@ -2,6 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 require("dotenv").config()
 const loginRoute = require("./routes/login")
+const port = process.env.PORT || 3000
+
 
 const app = express()
 app.use(express.json())
@@ -23,7 +25,6 @@ app.use("/login", loginRoute)
 // app.use("/user", userRoutes)
 // app.use("/post", postRoutes)
 
-const port = process.env.PORT || 3000
 
 
 app.listen(port, () => {
