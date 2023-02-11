@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 require("dotenv").config()
-const loginRoute = require("./routes/login")
+const loginRoute = require("./routes/auth")
 const port = process.env.PORT || 3000
 
 
@@ -21,7 +21,7 @@ db.once("open", function () {
     console.log("MongoDB Connected successfully");
 });
 
-app.use("/login", loginRoute)
+app.use("/", loginRoute)
 // app.use("/user", userRoutes)
 // app.use("/post", postRoutes)
 
