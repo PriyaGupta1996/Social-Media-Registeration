@@ -6,37 +6,30 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
 router.post('/signup', async (req, res) => {
-    let result = await user.find({ email: req.body.email })
-    console.log("🚀 ~ file: auth.js:10 ~ router.post ~ result", result)
+    let result = await user.find({ email: req.body.email.toLowerCase() })
     if (result.length > 0) {
         return res.status(400).send({ message: "email already exists" })
     }
     let password
     try {
-        console.log("here2")
         let salt = await bcrypt.genSalt(+process.env.SALT_ROUNDS)
         password = await bcrypt.hash(req.body.password, salt)
     }
     catch (err) {
-        console.log("here3")
-        console.log(err)
-        return res.status(500).json({ message: err.message() })
+        return res.status(500).json({ error: err.message })
     }
     try {
         const userDetails = new user({
             name: req.body.name,
-            email: req.body.email,
+            email: req.body.email.toLowerCase(),
             password: password
         })
-        console.log("here4")
         userDetails.save((err, response) => {
             if (err) {
-                console.log("here5")
                 console.log(err)
-                return res.status(500).json({ message: err })
+                return res.status(500).json({ error: err.message })
             }
             else {
-                console.log("here6")
                 const token = jwt.sign(req.body.email.toLowerCase(), process.env.JWT_TOKEN)
                 const { password, ...result } = response._doc
                 result.token = token
@@ -45,10 +38,9 @@ router.post('/signup', async (req, res) => {
         }
         )
     }
-    catch (error) {
-        console.log("here7")
+    catch (err) {
         console.log(err)
-        res.status(500).json({ messages: error })
+        res.status(500).json({ error: err.message })
     }
 
 
