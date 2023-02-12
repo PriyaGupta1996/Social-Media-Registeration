@@ -24,19 +24,22 @@ router.post('/signup', async (req, res) => {
             email: req.body.email.toLowerCase(),
             password: password
         })
-        userDetails.save((err, response) => {
-            if (err) {
-                console.log(err)
-                return res.status(500).json({ error: err.message })
-            }
-            else {
+
+        try {
+            let userDetailsResponse = await userDetails.save()
+            if (userDetailsResponse) {
                 const token = jwt.sign(req.body.email.toLowerCase(), process.env.JWT_TOKEN)
-                const { password, ...result } = response._doc
+                const { password, ...result } = userDetailsResponse._doc
                 result.token = token
                 res.status(200).send({ message: result })
             }
+
         }
-        )
+        catch (err) {
+            console.log(err)
+            return res.status(500).json({ error: err.message })
+        }
+
     }
     catch (err) {
         console.log(err)
