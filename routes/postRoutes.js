@@ -40,6 +40,27 @@ router.post('/', async (req, res) => {
 })
 
 router.get("/", async (req, res) => {
+    let { email } = req.query
+    if (email) {
+        try {
+            let userPosts = await user.findOne({ email }).populate({
+                path: "posts",
+                select: "message"
+            })
+            if (userPosts.posts.length > 0) {
+                let { password, ...result } = userPosts._doc
+                res.status(200).send({ message: result })
+            }
+            else {
+                res.status(200).send({ message: "No posts found" })
+            }
+        } catch (err) {
+            return res.status(404).send({
+                message: "User not found",
+                error: err.message
+            })
+        }
+    }
     try {
         const validEmail = req.userEmail
         if (validEmail) {
@@ -57,8 +78,5 @@ router.get("/", async (req, res) => {
     }
 
 })
-
-router.get("/user")
-
 
 module.exports = router
